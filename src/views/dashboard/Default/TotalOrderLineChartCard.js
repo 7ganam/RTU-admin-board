@@ -54,7 +54,7 @@ const TotalOrderLineChartCard = ({ isLoading, ...props }) => {
                             <Grid item>
                                 <Grid container justifyContent="space-between">
                                     <Grid item>
-                                        <Link to={`/free/stations/${props.id}`}>
+                                        <Link to={`/stations/${props.id}`}>
                                             <Avatar
                                                 variant="rounded"
                                                 sx={{
