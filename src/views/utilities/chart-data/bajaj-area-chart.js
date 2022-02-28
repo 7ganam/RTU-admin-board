@@ -74,6 +74,13 @@ const chartData = [{
             data: [11, 11, 11, 11, 11, 11, 11]
         }
     ]
+}, {
+    type, height, options,
+    series: [
+        {
+            data: [11, 1, 11, 55, 11, 11, 11]
+        }
+    ]
 }]
 
 export default chartData;
