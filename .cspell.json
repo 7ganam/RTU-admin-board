@@ -1,0 +1,15 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "allowCompoundWords": true,
+  "words": [],
+  "ignorePaths": [
+    "node_modules/**"
+  ],
+  "ignoreWords": [
+    "Bajaj",
+    "TABLER",
+    "bgcolor",
+    "ganam"
+  ]
+}
