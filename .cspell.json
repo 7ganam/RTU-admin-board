@@ -1,15 +1,20 @@
 {
-  "version": "0.2",
-  "language": "en",
-  "allowCompoundWords": true,
-  "words": [],
-  "ignorePaths": [
-    "node_modules/**"
-  ],
-  "ignoreWords": [
-    "Bajaj",
-    "TABLER",
-    "bgcolor",
-    "ganam"
-  ]
+    "version": "0.2",
+    "language": "en",
+    "allowCompoundWords": true,
+    "words": [
+        "clsx",
+        "formik",
+        "yalla"
+    ],
+    "ignorePaths": [
+        "node_modules/**"
+    ],
+    "ignoreWords": [
+        "Bajaj",
+        "Roboto",
+        "TABLER",
+        "bgcolor",
+        "ganam"
+    ]
 }
