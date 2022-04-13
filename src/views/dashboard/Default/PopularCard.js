@@ -6,7 +6,6 @@ import { useTheme } from '@mui/material/styles';
 import { Avatar, Button, CardActions, CardContent, Divider, Grid, Menu, MenuItem, Typography } from '@mui/material';
 
 // project imports
-import BajajAreaChartCard from './BajajAreaChartCard';
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
@@ -14,8 +13,6 @@ import { gridSpacing } from 'store/constant';
 // assets
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
@@ -80,7 +77,6 @@ const PopularCard = ({ isLoading }) => {
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}>
-
                                 <Grid container direction="column">
                                     <Grid item>
                                         <Grid container alignItems="center" justifyContent="space-between">
@@ -92,9 +88,7 @@ const PopularCard = ({ isLoading }) => {
                                             <Grid item>
                                                 <Grid container alignItems="center" justifyContent="space-between">
                                                     <Grid item>
-                                                        <Typography variant="subtitle1" color="inherit">
-
-                                                        </Typography>
+                                                        <Typography variant="subtitle1" color="inherit" />
                                                     </Grid>
                                                     <Grid item>
                                                         <Avatar
@@ -109,7 +103,6 @@ const PopularCard = ({ isLoading }) => {
                                                             }}
                                                         >
                                                             <ReportGmailerrorredIcon fontSize="small" color="inherit" />
-
                                                         </Avatar>
                                                     </Grid>
                                                 </Grid>
@@ -134,9 +127,7 @@ const PopularCard = ({ isLoading }) => {
                                             <Grid item>
                                                 <Grid container alignItems="center" justifyContent="space-between">
                                                     <Grid item>
-                                                        <Typography variant="subtitle1" color="inherit">
-
-                                                        </Typography>
+                                                        <Typography variant="subtitle1" color="inherit" />
                                                     </Grid>
                                                     <Grid item>
                                                         <Avatar
@@ -151,7 +142,6 @@ const PopularCard = ({ isLoading }) => {
                                                             }}
                                                         >
                                                             <ReportGmailerrorredIcon fontSize="small" color="inherit" />
-
                                                         </Avatar>
                                                     </Grid>
                                                 </Grid>
@@ -164,7 +154,6 @@ const PopularCard = ({ isLoading }) => {
                                         </Typography>
                                     </Grid>
                                 </Grid>
-
                             </Grid>
                         </Grid>
                     </CardContent>
