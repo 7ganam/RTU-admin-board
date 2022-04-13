@@ -2,21 +2,7 @@
     "version": "0.2",
     "language": "en",
     "allowCompoundWords": true,
-    "words": [
-        "clsx",
-        "formik",
-        "Gmailerrorred",
-        "Horiz",
-        "yalla"
-    ],
-    "ignorePaths": [
-        "node_modules/**"
-    ],
-    "ignoreWords": [
-        "Bajaj",
-        "Roboto",
-        "TABLER",
-        "bgcolor",
-        "ganam"
-    ]
+    "words": ["clsx", "formik", "Gmailerrorred", "Horiz", "yalla"],
+    "ignorePaths": ["node_modules/**"],
+    "ignoreWords": ["Bajaj", "Roboto", "TABLER", "bgcolor", "ganam"]
 }
