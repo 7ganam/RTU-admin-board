@@ -14,7 +14,8 @@ import chartData from './chart-data/bajaj-area-chart';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
-const BajajAreaChartCard = () => {
+// eslint-disable-next-line react/prop-types
+const ChartCard = ({ title }) => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const { navType } = customization;
@@ -39,7 +40,7 @@ const BajajAreaChartCard = () => {
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                             <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                                {props?.title ?? 'voltage'}
+                                {title ?? 'voltage'}
                             </Typography>
                         </Grid>
                         <Grid item>
@@ -60,4 +61,4 @@ const BajajAreaChartCard = () => {
     );
 };
 
-export default BajajAreaChartCard;
+export default ChartCard;

@@ -6,7 +6,7 @@ import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography }
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
+import RelayCard from 'ui-component/cards/Skeleton/RelayCard';
 
 // assets
 import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
@@ -39,13 +39,13 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
-const TotalIncomeLightCard = ({ isLoading }) => {
+const RelayLightCard = ({ isLoading }) => {
     const theme = useTheme();
 
     return (
         <>
             {isLoading ? (
-                <TotalIncomeCard />
+                <RelayCard />
             ) : (
                 <CardWrapper border={false} content={false}>
                     <Box sx={{ p: 2 }}>
@@ -92,8 +92,8 @@ const TotalIncomeLightCard = ({ isLoading }) => {
     );
 };
 
-TotalIncomeLightCard.propTypes = {
+RelayLightCard.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default TotalIncomeLightCard;
+export default RelayLightCard;

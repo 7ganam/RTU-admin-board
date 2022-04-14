@@ -1,37 +1,37 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
-import {Grid} from '@mui/material';
+import { Grid } from '@mui/material';
 
 // project imports
 import EarningCard from './EarningCard';
 import PopularCard from './PopularCard';
 import TotalOrderLineChartCard from './TotalOrderLineChartCard';
-import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-import TotalIncomeLightCard from './TotalIncomeLightCard';
+import RelayDarkCard from './RelayDarkCard';
+import RelayLightCard from './RelayLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
-import {gridSpacing} from 'store/constant';
+import { gridSpacing } from 'store/constant';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
-  const [isLoading, setLoading] = useState(true);
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+    const [isLoading, setLoading] = useState(true);
+    useEffect(() => {
+        setLoading(false);
+    }, []);
 
-  return (
-    <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}></Grid>
-      </Grid>
-      <Grid item xs={12}>
+    return (
         <Grid container spacing={gridSpacing}>
-          <Grid item container xs={12} md={8} spacing={gridSpacing}>
-            <Grid item lg={6} sm={6} xs={12} px='2'>
-              <TotalOrderLineChartCard id='1' />
+            <Grid item xs={12}>
+                <Grid container spacing={gridSpacing} />
             </Grid>
-            {/* <Grid item lg={6} md={6} sm={6} xs={12}>
+            <Grid item xs={12}>
+                <Grid container spacing={gridSpacing}>
+                    <Grid item container xs={12} md={8} spacing={gridSpacing}>
+                        <Grid item lg={6} sm={6} xs={12} px="2">
+                            <TotalOrderLineChartCard id="1" />
+                        </Grid>
+                        {/* <Grid item lg={6} md={6} sm={6} xs={12}>
                             <TotalOrderLineChartCard id='2' />
                         </Grid>
                         <Grid item lg={6} sm={6} xs={12} px='2' >
@@ -46,14 +46,14 @@ const Dashboard = () => {
                         <Grid item lg={6} md={6} sm={6} xs={12}>
                             <TotalOrderLineChartCard id='6' />
                         </Grid> */}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
-          </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <PopularCard isLoading={isLoading} />
+                    </Grid>
+                </Grid>
+            </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-  );
+    );
 };
 
 export default Dashboard;

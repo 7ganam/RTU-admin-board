@@ -7,7 +7,7 @@ import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
 // third-party
 import Chart from 'react-apexcharts';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -68,7 +68,6 @@ const TotalOrderLineChartCard = ({ isLoading, ...props }) => {
                                                 <BoltIcon fontSize="inherit" />
                                             </Avatar>
                                         </Link>
-
                                     </Grid>
                                     <Grid item>
                                         <Button
@@ -134,16 +133,46 @@ const TotalOrderLineChartCard = ({ isLoading, ...props }) => {
                                     </Grid>
                                     <Grid container item xs={6}>
                                         <Grid container xs={12} alignItems="center" justifyContent="center">
-                                            <Grid item xs={2}>  <div>V1</div></Grid>
-                                            <Grid item xs={8}>  {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} height={10} width={"100%"} margin={'auto'} />}</Grid>
+                                            <Grid item xs={2}>
+                                                {' '}
+                                                <div>V1</div>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {' '}
+                                                {timeValue ? (
+                                                    <Chart {...ChartDataMonth} />
+                                                ) : (
+                                                    <Chart {...ChartDataYear} height={10} width="100%" margin="auto" />
+                                                )}
+                                            </Grid>
                                         </Grid>
                                         <Grid container xs={12} alignItems="center" justifyContent="center">
-                                            <Grid item xs={2}>  <div>V1</div></Grid>
-                                            <Grid item xs={8}>  {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} height={10} width={"100%"} margin={'auto'} />}</Grid>
+                                            <Grid item xs={2}>
+                                                {' '}
+                                                <div>V1</div>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {' '}
+                                                {timeValue ? (
+                                                    <Chart {...ChartDataMonth} />
+                                                ) : (
+                                                    <Chart {...ChartDataYear} height={10} width="100%" margin="auto" />
+                                                )}
+                                            </Grid>
                                         </Grid>
                                         <Grid container xs={12} alignItems="center" justifyContent="center">
-                                            <Grid item xs={2}>  <div>V1</div></Grid>
-                                            <Grid item xs={8}>  {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} height={10} width={"100%"} margin={'auto'} />}</Grid>
+                                            <Grid item xs={2}>
+                                                {' '}
+                                                <div>V1</div>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {' '}
+                                                {timeValue ? (
+                                                    <Chart {...ChartDataMonth} />
+                                                ) : (
+                                                    <Chart {...ChartDataYear} height={10} width="100%" margin="auto" />
+                                                )}
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>

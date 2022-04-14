@@ -6,7 +6,7 @@ import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography }
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
+import RelayCard from 'ui-component/cards/Skeleton/RelayCard';
 
 // assets
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
@@ -41,13 +41,13 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME DARK CARD ||============================== //
 
-const TotalIncomeDarkCard = ({ isLoading }) => {
+const RelayDarkCard = ({ isLoading }) => {
     const theme = useTheme();
 
     return (
         <>
             {isLoading ? (
-                <TotalIncomeCard />
+                <RelayCard />
             ) : (
                 <CardWrapper border={false} content={false}>
                     <Box sx={{ p: 2 }}>
@@ -92,8 +92,8 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
     );
 };
 
-TotalIncomeDarkCard.propTypes = {
+RelayDarkCard.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default TotalIncomeDarkCard;
+export default RelayDarkCard;

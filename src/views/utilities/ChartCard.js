@@ -12,9 +12,52 @@ import Chart from 'react-apexcharts';
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
 // eslint-disable-next-line react/prop-types
-const BajajAreaChartCard = ({ ChartData1, title }) => {
+
+const type = 'area';
+const height = 95;
+const options = {
+    chart: {
+        id: 'support-chart',
+        sparkline: {
+            enabled: true
+        }
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        curve: 'smooth',
+        width: 1
+    },
+    tooltip: {
+        fixed: {
+            enabled: false
+        },
+        x: {
+            show: false
+        },
+        y: {
+            title: 'Ticket '
+        },
+        marker: {
+            show: false
+        }
+    }
+};
+const localChartData = {
+    type,
+    height,
+    options,
+    series: [
+        {
+            data: [10, 0, 0, 10, 0, 0, 0]
+        }
+    ]
+};
+const ChartCard = ({ data2, title }) => {
     // eslint-disable-next-line react/prop-types
-    const data = ChartData1?.series[0].data ?? [0, 0, 0, 0, 0, 0, 0];
+    const ChartData = localChartData;
+    const data = data2;
 
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
@@ -25,14 +68,14 @@ const BajajAreaChartCard = ({ ChartData1, title }) => {
     useEffect(() => {
         const newSupportChart = {
             // eslint-disable-next-line react/prop-types
-            ...ChartData1.options,
+            ...ChartData.options,
             colors: [orangeDark],
             tooltip: {
                 theme: 'light'
             }
         };
         ApexCharts.exec(`support-chart`, 'updateOptions', newSupportChart);
-    }, [navType, orangeDark, ChartData1]);
+    }, [navType, orangeDark, ChartData]);
 
     return (
         <Card sx={{ bgcolor: 'secondary.light' }}>
@@ -55,9 +98,22 @@ const BajajAreaChartCard = ({ ChartData1, title }) => {
                     <Typography variant="subtitle2" sx={{ color: theme.palette.grey[800] }} />
                 </Grid>
             </Grid>
-            <div style={{ height: '100px' }}>{ChartData1 && <Chart {...ChartData1} height={100} />} </div>
+            <div style={{ height: '100px' }}>
+                {ChartData && (
+                    <Chart
+                        type={type}
+                        height={100}
+                        options={options}
+                        series={[
+                            {
+                                data: data2
+                            }
+                        ]}
+                    />
+                )}{' '}
+            </div>
         </Card>
     );
 };
 
-export default BajajAreaChartCard;
+export default ChartCard;
