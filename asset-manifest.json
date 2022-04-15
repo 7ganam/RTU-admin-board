@@ -1,0 +1,43 @@
+{
+  "files": {
+    "static/js/0.d1912575.chunk.js": "/7ganam/RTU-admin-board/static/js/0.d1912575.chunk.js",
+    "static/js/0.d1912575.chunk.js.map": "/7ganam/RTU-admin-board/static/js/0.d1912575.chunk.js.map",
+    "static/js/1.5c097a71.chunk.js": "/7ganam/RTU-admin-board/static/js/1.5c097a71.chunk.js",
+    "static/js/1.5c097a71.chunk.js.map": "/7ganam/RTU-admin-board/static/js/1.5c097a71.chunk.js.map",
+    "main.css": "/7ganam/RTU-admin-board/static/css/main.18152fb5.chunk.css",
+    "main.js": "/7ganam/RTU-admin-board/static/js/main.e2e47f83.chunk.js",
+    "main.js.map": "/7ganam/RTU-admin-board/static/js/main.e2e47f83.chunk.js.map",
+    "runtime-main.js": "/7ganam/RTU-admin-board/static/js/runtime-main.f3a0f5f7.js",
+    "runtime-main.js.map": "/7ganam/RTU-admin-board/static/js/runtime-main.f3a0f5f7.js.map",
+    "static/css/4.03ebe89f.chunk.css": "/7ganam/RTU-admin-board/static/css/4.03ebe89f.chunk.css",
+    "static/js/4.58fe2669.chunk.js": "/7ganam/RTU-admin-board/static/js/4.58fe2669.chunk.js",
+    "static/js/4.58fe2669.chunk.js.map": "/7ganam/RTU-admin-board/static/js/4.58fe2669.chunk.js.map",
+    "static/js/5.8c936f3b.chunk.js": "/7ganam/RTU-admin-board/static/js/5.8c936f3b.chunk.js",
+    "static/js/5.8c936f3b.chunk.js.map": "/7ganam/RTU-admin-board/static/js/5.8c936f3b.chunk.js.map",
+    "static/js/6.72200841.chunk.js": "/7ganam/RTU-admin-board/static/js/6.72200841.chunk.js",
+    "static/js/6.72200841.chunk.js.map": "/7ganam/RTU-admin-board/static/js/6.72200841.chunk.js.map",
+    "static/js/7.eba43410.chunk.js": "/7ganam/RTU-admin-board/static/js/7.eba43410.chunk.js",
+    "static/js/7.eba43410.chunk.js.map": "/7ganam/RTU-admin-board/static/js/7.eba43410.chunk.js.map",
+    "static/js/8.8a40f8e7.chunk.js": "/7ganam/RTU-admin-board/static/js/8.8a40f8e7.chunk.js",
+    "static/js/8.8a40f8e7.chunk.js.map": "/7ganam/RTU-admin-board/static/js/8.8a40f8e7.chunk.js.map",
+    "static/js/9.9d97acd1.chunk.js": "/7ganam/RTU-admin-board/static/js/9.9d97acd1.chunk.js",
+    "static/js/9.9d97acd1.chunk.js.map": "/7ganam/RTU-admin-board/static/js/9.9d97acd1.chunk.js.map",
+    "index.html": "/7ganam/RTU-admin-board/index.html",
+    "static/css/4.03ebe89f.chunk.css.map": "/7ganam/RTU-admin-board/static/css/4.03ebe89f.chunk.css.map",
+    "static/css/main.18152fb5.chunk.css.map": "/7ganam/RTU-admin-board/static/css/main.18152fb5.chunk.css.map",
+    "static/js/1.5c097a71.chunk.js.LICENSE.txt": "/7ganam/RTU-admin-board/static/js/1.5c097a71.chunk.js.LICENSE.txt",
+    "static/js/4.58fe2669.chunk.js.LICENSE.txt": "/7ganam/RTU-admin-board/static/js/4.58fe2669.chunk.js.LICENSE.txt",
+    "static/js/5.8c936f3b.chunk.js.LICENSE.txt": "/7ganam/RTU-admin-board/static/js/5.8c936f3b.chunk.js.LICENSE.txt",
+    "static/media/earning.b019e86a.svg": "/7ganam/RTU-admin-board/static/media/earning.b019e86a.svg",
+    "static/media/logo.050e3522.png": "/7ganam/RTU-admin-board/static/media/logo.050e3522.png",
+    "static/media/social-google.svg": "/7ganam/RTU-admin-board/static/media/social-google.9887eb8e.svg",
+    "static/media/user-svgrepo-com.4a000e6c.svg": "/7ganam/RTU-admin-board/static/media/user-svgrepo-com.4a000e6c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f3a0f5f7.js",
+    "static/css/4.03ebe89f.chunk.css",
+    "static/js/4.58fe2669.chunk.js",
+    "static/css/main.18152fb5.chunk.css",
+    "static/js/main.e2e47f83.chunk.js"
+  ]
+}
