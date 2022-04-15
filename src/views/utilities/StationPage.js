@@ -15,17 +15,49 @@ import { useParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import * as mqtt from 'mqtt'; // import everything inside the mqtt module and give it the namespace "mqtt"
 
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 // =============================|| TABLER ICONS ||============================= //
 
-const useMqtt = () => {};
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14
+    }
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0
+    }
+}));
+
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+}
+
+const rows = [createData('station1', 'loading...', 'loading...', 'loading...', 'loading...')];
 
 const StationPage = () => {
     const { id } = useParams();
-    const [checked1, setchecked1] = useState(false);
     const [RelaysHwState, setRelaysHwState] = useState(['-', '-', '-', '-', '-', '-']);
     const [Command, setCommand] = useState(['-', '-', '-', '-', '-', '-']);
     const [ReceivedRelayArray, setReceivedRelayArray] = useState([]);
     const [ReceivedDataArray, setReceivedDataArray] = useState([]);
+    const [ReceivedDigitalArray, setReceivedDigitalArray] = useState(['loading...', 'loading...', 'loading...', 'loading...']);
     const [GraphsData, setGraphsData] = useState([
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
@@ -51,9 +83,12 @@ const StationPage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     function publisherFunction() {
+        let publishString = Command.join(',');
+        publishString += ',';
+        console.log('pulished value', publishString);
         brokerRef.current.publish(
             `station${id}/command`,
-            JSON.stringify(checked1 ? 1 : 0) // convert number to string
+            JSON.stringify(publishString) // convert number to string
         );
     }
 
@@ -64,57 +99,25 @@ const StationPage = () => {
     const stopPublishing = () => {
         clearInterval(PublisherTimerRef.current);
     };
-    useEffect(
-        () => () => {
-            stopPublishing();
-        },
-        []
-    );
 
-    const type = 'area';
-    const height = 95;
-    const options = {
-        chart: {
-            id: 'support-chart',
-            sparkline: {
-                enabled: true
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 1
-        },
-        tooltip: {
-            fixed: {
-                enabled: false
-            },
-            x: {
-                show: false
-            },
-            y: {
-                title: 'Ticket '
-            },
-            marker: {
-                show: false
-            }
-        }
+    const isSendingCommand = () => {
+        const oneExists = Command.indexOf('1') !== -1;
+        const zeroExists = Command.indexOf('0') !== -1;
+        return oneExists || zeroExists;
     };
-    const [ChartData1, setChartData1] = useState({
-        type,
-        height,
-        options,
-        series: [
-            {
-                data: [0, 0, 0, 0, 0, 0, 0]
-            }
-        ]
-    });
+
+    useEffect(() => {
+        if (isSendingCommand()) {
+            stopPublishing();
+            startPublishing(3000);
+        }
+        return () => {
+            stopPublishing();
+        };
+    }, [Command]);
 
     const removeUnwantedChars = (inputString) => {
-        const forbiddenChars = ['/', '?', '&', '=', '.', '"'];
+        const forbiddenChars = ['"'];
 
         // eslint-disable-next-line no-restricted-syntax
         for (const char of forbiddenChars) {
@@ -123,13 +126,16 @@ const StationPage = () => {
         return inputString;
     };
 
-    const isSendingCommand = () => {
-        const oneExists = Command.indexOf('1') !== -1;
-        const zeroExists = Command.indexOf('0') !== -1;
-
-        return oneExists || zeroExists;
+    const isEqual = (ReceivedRelayArray, command) => {
+        for (let index = 0; index < ReceivedRelayArray.length; index++) {
+            if (command[index] === '1' || command[index] === '0') {
+                if (command[index] !== ReceivedRelayArray[index]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     };
-    const isEqual = (a1, a2) => JSON.stringify(a1) === JSON.stringify(a2);
 
     const setIndividualStates = (receivedRelayArray, commandArray) => {
         for (let i = 0; i < receivedRelayArray.length; i++) {
@@ -149,6 +155,7 @@ const StationPage = () => {
             if (isEqual(ReceivedRelayArray, Command)) {
                 // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
                 setCommand(['-', '-', '-', '-', '-', '-']);
+                stopPublishing();
                 setRelaysHwState(ReceivedRelayArray);
             } else {
                 // to make for the case if another client set a state while this client is setting.
@@ -165,9 +172,10 @@ const StationPage = () => {
         const graphsDataCopy = [...GraphsData];
         for (let index = 0; index < ReceivedDataArray.length; index++) {
             const reading = ReceivedDataArray[index];
+            // console.log('reading', reading);
             const graphArray = [...GraphsData[index]];
             graphArray.shift();
-            graphArray.push(+reading);
+            graphArray.push(parseFloat(reading));
             graphsDataCopy[index] = graphArray;
         }
         setGraphsData(graphsDataCopy);
@@ -183,11 +191,16 @@ const StationPage = () => {
             const payloadString = new TextDecoder().decode(payload);
             const cleanPayloadString = removeUnwantedChars(payloadString);
             const payloadArray = cleanPayloadString.split(',');
+            console.log('payloadArray', payloadArray);
             // get relays values
-            const receivedRelayArray = payloadArray.slice(8);
+            const receivedRelayArray = payloadArray.slice(8, 14);
             setReceivedRelayArray(receivedRelayArray);
 
+            const receivedDigitalArray = payloadArray.slice(14, 18);
+            setReceivedDigitalArray(receivedDigitalArray);
+
             const receivedDataArray = payloadArray.slice(0, 8);
+
             setReceivedDataArray(receivedDataArray);
         });
         return () => {};
@@ -202,28 +215,28 @@ const StationPage = () => {
             <Card sx={{ overflow: 'hidden' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[0]} />
+                        <ChartCard title="V1" unit="V" data2={GraphsData[0]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[1]} />
+                        <ChartCard title="V2" unit="V" data2={GraphsData[1]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[2]} />
+                        <ChartCard title="V3" unit="V" data2={GraphsData[2]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[3]} />
+                        <ChartCard title="F" unit="Hz" data2={GraphsData[3]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[4]} />
+                        <ChartCard title="I1" unit="A" data2={GraphsData[4]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[5]} />
+                        <ChartCard title="I2" unit="A" data2={GraphsData[5]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[6]} />
+                        <ChartCard title="I3" unit="A" data2={GraphsData[6]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="RMS Voltage I" value="220v" data2={GraphsData[7]} />
+                        <ChartCard title="AP" unit="VA" data2={GraphsData[7]} />
                     </Grid>
                 </Grid>
 
@@ -287,6 +300,35 @@ const StationPage = () => {
                         </Grid>
                     </Grid>
                 </Grid>
+
+                <Divider sx={{ my: 3 }} />
+
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>Digital Values</StyledTableCell>
+                                <StyledTableCell align="right">Value1</StyledTableCell>
+                                <StyledTableCell align="right">Value2</StyledTableCell>
+                                <StyledTableCell align="right">Value3</StyledTableCell>
+                                <StyledTableCell align="right">Value4</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <StyledTableRow key={row.name}>
+                                    <StyledTableCell component="th" scope="row">
+                                        {row.name}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[0]}</StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[1]}</StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[2]}</StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[3]}</StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Card>
         </MainCard>
     );

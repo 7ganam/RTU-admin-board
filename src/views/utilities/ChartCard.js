@@ -54,7 +54,7 @@ const localChartData = {
         }
     ]
 };
-const ChartCard = ({ data2, title }) => {
+const ChartCard = ({ data2, title, unit }) => {
     // eslint-disable-next-line react/prop-types
     const ChartData = localChartData;
     const data = data2;
@@ -84,12 +84,12 @@ const ChartCard = ({ data2, title }) => {
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                             <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                                {title ?? 'Voltage'}
+                                {title ?? '---'}
                             </Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="h4" sx={{ color: theme.palette.grey[800] }}>
-                                {`${data[data.length - 1]}v` ?? '0v'}
+                                {`${data[data.length - 1]}${unit}` ?? `--${unit}`}
                             </Typography>
                         </Grid>
                     </Grid>
