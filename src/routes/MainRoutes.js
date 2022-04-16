@@ -8,7 +8,8 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
 // utilities routing
-const UtilsStationPage = Loadable(lazy(() => import('views/utilities/StationPage')));
+const UtilsLowVoltageStationPage = Loadable(lazy(() => import('views/utilities/LowVoltageStationPage')));
+const UtilsMediumVoltageStationPage = Loadable(lazy(() => import('views/utilities/MediumVoltageStationPage')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -25,8 +26,12 @@ const MainRoutes = {
             element: <DashboardDefault />
         },
         {
-            path: '/stations/:id',
-            element: <UtilsStationPage />
+            path: '/low-voltage-stations/:id',
+            element: <UtilsLowVoltageStationPage />
+        },
+        {
+            path: '/medium-voltage-stations/:id',
+            element: <UtilsMediumVoltageStationPage />
         }
     ]
 };

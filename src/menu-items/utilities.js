@@ -19,7 +19,7 @@ const utilities = {
     children: [
         {
             id: 'icons',
-            title: 'Select Station',
+            title: 'Low voltage',
             type: 'collapse',
             icon: icons.IconBolt,
             children: [
@@ -27,42 +27,64 @@ const utilities = {
                     id: 'tabler-icons',
                     title: 'Station 1',
                     type: 'item',
-                    url: '/stations/1',
+                    url: '/low-voltage-stations/1',
                     breadcrumbs: false
                 },
                 {
                     id: 'tabler-icons',
                     title: 'Station 2',
                     type: 'item',
-                    url: '/stations/2',
+                    url: '/low-voltage-stations/2',
                     breadcrumbs: false
                 },
                 {
                     id: 'tabler-icons',
                     title: 'Station 3',
                     type: 'item',
-                    url: '/stations/3',
+                    url: '/low-voltage-stations/3',
                     breadcrumbs: false
                 },
                 {
                     id: 'tabler-icons',
                     title: 'Station 4',
                     type: 'item',
-                    url: '/stations/4',
+                    url: '/low-voltage-stations/4',
                     breadcrumbs: false
                 },
                 {
                     id: 'tabler-icons',
                     title: 'Station 5',
                     type: 'item',
-                    url: '/stations/5',
+                    url: '/low-voltage-stations/5',
                     breadcrumbs: false
                 },
                 {
                     id: 'tabler-icons',
                     title: 'Station 6',
                     type: 'item',
-                    url: '/stations/6',
+                    url: '/low-voltage-stations/6',
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
+            id: 'icons',
+            title: 'Medium voltage',
+            type: 'collapse',
+            icon: icons.IconBolt,
+            children: [
+                {
+                    id: 'tabler-icons',
+                    title: 'Station 1',
+                    type: 'item',
+                    url: '/medium-voltage-stations/1',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'tabler-icons',
+                    title: 'Station 2',
+                    type: 'item',
+                    url: '/medium-voltage-stations/2',
                     breadcrumbs: false
                 }
             ]
