@@ -25,7 +25,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
 // eslint-disable-next-line react/prop-types
-const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index }) => {
+const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, title }) => {
     const theme = useTheme();
     const handleChange = () => {
         const newCommand = [...Command];
@@ -61,7 +61,7 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index }
                             spacing={2}
                         >
                             <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: 'center', mb: 1 }}>
-                                <Typography variant="h5">Relay 1</Typography>
+                                <Typography variant="h5">{title ?? 'Relay '}</Typography>
                             </Box>
                             <Box sx={{ display: 'flex' }}>
                                 <Box>

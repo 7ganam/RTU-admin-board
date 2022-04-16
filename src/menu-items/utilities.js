@@ -36,34 +36,6 @@ const utilities = {
                     type: 'item',
                     url: '/low-voltage-stations/2',
                     breadcrumbs: false
-                },
-                {
-                    id: 'tabler-icons',
-                    title: 'Station 3',
-                    type: 'item',
-                    url: '/low-voltage-stations/3',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'tabler-icons',
-                    title: 'Station 4',
-                    type: 'item',
-                    url: '/low-voltage-stations/4',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'tabler-icons',
-                    title: 'Station 5',
-                    type: 'item',
-                    url: '/low-voltage-stations/5',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'tabler-icons',
-                    title: 'Station 6',
-                    type: 'item',
-                    url: '/low-voltage-stations/6',
-                    breadcrumbs: false
                 }
             ]
         },

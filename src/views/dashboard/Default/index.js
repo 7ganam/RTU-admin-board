@@ -29,22 +29,16 @@ const Dashboard = () => {
                 <Grid container spacing={gridSpacing}>
                     <Grid item container xs={12} md={8} spacing={gridSpacing}>
                         <Grid item lg={6} sm={6} xs={12} px="2">
-                            <TotalOrderLineChartCard id="1" />
+                            <TotalOrderLineChartCard id="1 low voltage" />
                         </Grid>
                         <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <TotalOrderLineChartCard id="2" />
+                            <TotalOrderLineChartCard id="2 low voltage" />
                         </Grid>
                         <Grid item lg={6} sm={6} xs={12} px="2">
-                            <TotalOrderLineChartCard id="3" />
+                            <TotalOrderLineChartCard id="1 medium voltage" />
                         </Grid>
                         <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <TotalOrderLineChartCard id="4" />
-                        </Grid>
-                        <Grid item lg={6} sm={6} xs={12} px="2">
-                            <TotalOrderLineChartCard id="5" />
-                        </Grid>
-                        <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <TotalOrderLineChartCard id="6" />
+                            <TotalOrderLineChartCard id="2 medium voltage" />
                         </Grid>
                     </Grid>
                     <Grid item xs={12} md={4}>

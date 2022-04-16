@@ -49,7 +49,7 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const rows = [createData('station1', 'loading...', 'loading...', 'loading...', 'loading...')];
+const rows = [createData('State', 'loading...', 'loading...', 'loading...', 'loading...')];
 
 const LowVoltageStationPage = () => {
     const { id } = useParams();
@@ -217,28 +217,28 @@ const LowVoltageStationPage = () => {
             <Card sx={{ overflow: 'hidden' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V1" unit="V" data2={GraphsData[0]} />
+                        <ChartCard title="Phase 1 RMS vlotage" unit="V" data2={GraphsData[0]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V2" unit="V" data2={GraphsData[1]} />
+                        <ChartCard title="Phase 2 RMS vlotage" unit="V" data2={GraphsData[1]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V3" unit="V" data2={GraphsData[2]} />
+                        <ChartCard title="Phase 3 RMS vlotage" unit="V" data2={GraphsData[2]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="F" unit="Hz" data2={GraphsData[3]} />
+                        <ChartCard title="Frequency" unit="Hz" data2={GraphsData[3]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I1" unit="A" data2={GraphsData[4]} />
+                        <ChartCard title="phase 1 RMS current" unit="A" data2={GraphsData[4]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I2" unit="A" data2={GraphsData[5]} />
+                        <ChartCard title="phase 2 RMS current" unit="A" data2={GraphsData[5]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I3" unit="A" data2={GraphsData[6]} />
+                        <ChartCard title="phase 3 RMS current" unit="A" data2={GraphsData[6]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="AP" unit="VA" data2={GraphsData[7]} />
+                        <ChartCard title="Apparent Power" unit="VA" data2={GraphsData[7]} />
                     </Grid>
                 </Grid>
 
@@ -253,6 +253,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={0}
+                                title="relay 1"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -262,6 +263,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={1}
+                                title="relay 2"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
@@ -271,6 +273,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={2}
+                                title="relay 3"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -280,6 +283,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={3}
+                                title="relay 4"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -289,6 +293,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={4}
+                                title="relay 5"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
@@ -298,6 +303,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={5}
+                                title="relay 6"
                             />
                         </Grid>
                     </Grid>
@@ -309,11 +315,11 @@ const LowVoltageStationPage = () => {
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell>Digital Values</StyledTableCell>
-                                <StyledTableCell align="right">Value1</StyledTableCell>
-                                <StyledTableCell align="right">Value2</StyledTableCell>
-                                <StyledTableCell align="right">Value3</StyledTableCell>
-                                <StyledTableCell align="right">Value4</StyledTableCell>
+                                <StyledTableCell>Digital input ports</StyledTableCell>
+                                <StyledTableCell align="right">digital input 1</StyledTableCell>
+                                <StyledTableCell align="right">digital input 2</StyledTableCell>
+                                <StyledTableCell align="right">digital input 3</StyledTableCell>
+                                <StyledTableCell align="right">digital input 4</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

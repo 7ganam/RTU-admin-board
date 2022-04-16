@@ -50,22 +50,22 @@ function createData(name, value) {
 }
 
 const rows = [
-    createData('reading1', 'loading...'),
-    createData('reading2', 'loading...'),
-    createData('reading3', 'loading...'),
-    createData('reading4', 'loading...'),
-    createData('reading5', 'loading...'),
-    createData('reading6', 'loading...'),
-    createData('reading7', 'loading...'),
-    createData('reading8', 'loading...'),
-    createData('reading9', 'loading...'),
-    createData('reading10', 'loading...'),
-    createData('reading11', 'loading...'),
-    createData('reading12', 'loading...'),
-    createData('reading13', 'loading...'),
-    createData('reading14', 'loading...'),
-    createData('reading15', 'loading...'),
-    createData('reading16', 'loading...')
+    createData('DI 1', 'loading...'),
+    createData('DI 2', 'loading...'),
+    createData('DI 3', 'loading...'),
+    createData('DI 4', 'loading...'),
+    createData('DI 5', 'loading...'),
+    createData('DI 6', 'loading...'),
+    createData('DI 7', 'loading...'),
+    createData('DI 8', 'loading...'),
+    createData('DI 9', 'loading...'),
+    createData('DI 10', 'loading...'),
+    createData('DI 11', 'loading...'),
+    createData('DI 12', 'loading...'),
+    createData('DI 13', 'loading...'),
+    createData('DI 14', 'loading...'),
+    createData('DI 15', 'loading...'),
+    createData('DI 16', 'loading...')
 ];
 const MediumVoltageStationPage = () => {
     const { id } = useParams();
@@ -227,11 +227,11 @@ const MediumVoltageStationPage = () => {
         // console.log('ReceivedDataArray', ReceivedDataArray);
         const graphsDataCopy = [...GraphsData];
         for (let index = 0; index < ReceivedDataArray.length; index++) {
-            const reading = ReceivedDataArray[index];
-            // console.log('reading', reading);
+            const DI = ReceivedDataArray[index];
+            // console.log('DI ', DI );
             const graphArray = [...GraphsData[index]];
             graphArray.shift();
-            graphArray.push(parseFloat(reading));
+            graphArray.push(parseFloat(DI));
             graphsDataCopy[index] = graphArray;
         }
         setGraphsData(graphsDataCopy);
@@ -246,37 +246,37 @@ const MediumVoltageStationPage = () => {
             <Card sx={{ overflow: 'hidden' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V1" unit="V" data2={GraphsData[0]} />
+                        <ChartCard title="line to line voltage 1" unit="V" data2={GraphsData[0]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V2" unit="V" data2={GraphsData[1]} />
+                        <ChartCard title="line to line voltage 2" unit="V" data2={GraphsData[1]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="V3" unit="V" data2={GraphsData[2]} />
+                        <ChartCard title="line to line voltage 3" unit="V" data2={GraphsData[2]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="F" unit="Hz" data2={GraphsData[3]} />
+                        <ChartCard title="Frequency" unit="Hz" data2={GraphsData[3]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I1" unit="A" data2={GraphsData[4]} />
+                        <ChartCard title="phase 1 current" unit="A" data2={GraphsData[4]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I2" unit="A" data2={GraphsData[5]} />
+                        <ChartCard title="phase 2 current" unit="A" data2={GraphsData[5]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="I3" unit="A" data2={GraphsData[6]} />
+                        <ChartCard title="phase 3 current" unit="A" data2={GraphsData[6]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="Pf" unit="" data2={GraphsData[7]} />
+                        <ChartCard title="Power factor" unit="" data2={GraphsData[7]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="Act_P" unit="kW" data2={GraphsData[8]} />
+                        <ChartCard title="Active power" unit="kW" data2={GraphsData[8]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="Re_P" unit="kVAR" data2={GraphsData[9]} />
+                        <ChartCard title="Reactive power" unit="kVAR" data2={GraphsData[9]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="App_P" unit="kVA" data2={GraphsData[10]} />
+                        <ChartCard title="Apparent power" unit="kVA" data2={GraphsData[10]} />
                     </Grid>
                 </Grid>
 
@@ -291,6 +291,7 @@ const MediumVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={0}
+                                title="Relay 1"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -300,6 +301,7 @@ const MediumVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={1}
+                                title="Relay 2"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
@@ -309,6 +311,7 @@ const MediumVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={2}
+                                title="Relay 3"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -318,6 +321,7 @@ const MediumVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={3}
+                                title="Relay 4"
                             />
                         </Grid>
                     </Grid>
@@ -329,8 +333,8 @@ const MediumVoltageStationPage = () => {
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell align="center">Name</StyledTableCell>
-                                <StyledTableCell align="center">Value</StyledTableCell>
+                                <StyledTableCell align="center">Digital input</StyledTableCell>
+                                <StyledTableCell align="center">State</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
