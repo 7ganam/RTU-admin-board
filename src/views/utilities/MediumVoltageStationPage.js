@@ -69,7 +69,7 @@ const rows = [
 ];
 const MediumVoltageStationPage = () => {
     const { id } = useParams();
-    const [RelaysHwState, setRelaysHwState] = useState(['-', '-', '-', '-']);
+    // const [RelaysHwState, setRelaysHwState] = useState(['-', '-', '-', '-']);
     const [Command, setCommand] = useState(['-', '-', '-', '-']);
     const [ReceivedRelayArray, setReceivedRelayArray] = useState([]);
     const [ReceivedDataArray, setReceivedDataArray] = useState([]);
@@ -130,6 +130,17 @@ const MediumVoltageStationPage = () => {
         const zeroExists = Command.indexOf('0') !== -1;
         return oneExists || zeroExists;
     };
+
+    const removeUnwantedChars = (inputString) => {
+        const forbiddenChars = ['"'];
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const char of forbiddenChars) {
+            inputString = inputString.split(char).join('');
+        }
+        return inputString;
+    };
+
     const isEqual = (ReceivedRelayArray, command) => {
         for (let index = 0; index < ReceivedRelayArray.length; index++) {
             if (command[index] === '1' || command[index] === '0') {
@@ -140,25 +151,26 @@ const MediumVoltageStationPage = () => {
         }
         return true;
     };
-    const removeUnwantedChars = (inputString) => {
-        const forbiddenChars = ['"'];
 
-        // eslint-disable-next-line no-restricted-syntax
-        for (const char of forbiddenChars) {
-            inputString = inputString.split(char).join('');
-        }
-        return inputString;
-    };
-    const setIndividualStates = (receivedRelayArray, commandArray) => {
-        for (let i = 0; i < receivedRelayArray.length; i++) {
-            if ((commandArray[i] === '1' || commandArray[i] === '0') && commandArray[i] === receivedRelayArray[i]) {
-                const commandArrayCopy = [...commandArray];
+    const handleArrivedRelaySignals = (RelayHWStateArray, RelayCommandArray) => {
+        // HW STATE 1 -> arudino received the command and will not apply any other commands until you send it another 0
+        // HW STATE 0 -> arduino waiting for commands and will apply a new command if you send it.
+
+        // 1- if a hw sate is 1 set the corresponding command to 0 to to inform the arduino the hardware state arrived here and allow it to process further commands
+        // 2- if a hw state is 0 && command is 0 -> stop sending the command ( this means you were telling the arduino to start accepting new commands and it received this so no need for further)
+        // 3-if a hw state is 0 && command is 1 -> do nothing ( you are sending a command and aruino didn't hear yet).
+        const commandArrayCopy = [...Command];
+
+        for (let i = 0; i < RelayHWStateArray.length; i++) {
+            if (RelayHWStateArray[i] === '1') {
+                commandArrayCopy[i] = '0';
+            } else if (RelayHWStateArray[i] === '0' && Command[i] === '0') {
                 commandArrayCopy[i] = '-';
-                setCommand(commandArrayCopy); // reset the command
-                const RelaysHwStateCopy = [...RelaysHwState];
-                RelaysHwStateCopy[i] = receivedRelayArray[i];
-                setRelaysHwState(RelaysHwStateCopy); // set the single relay state to the received the data
             }
+        }
+
+        if (!isEqual(commandArrayCopy, Command)) {
+            setCommand(commandArrayCopy);
         }
     };
 
@@ -183,7 +195,6 @@ const MediumVoltageStationPage = () => {
             const payloadString = new TextDecoder().decode(payload);
             const cleanPayloadString = removeUnwantedChars(payloadString);
             const payloadArray = cleanPayloadString.split(',');
-            console.log('payloadArray', payloadArray);
 
             const receivedDataArray = payloadArray.slice(0, 11);
             setReceivedDataArray(receivedDataArray);
@@ -197,6 +208,7 @@ const MediumVoltageStationPage = () => {
         return () => {};
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     useEffect(() => {
         if (isSendingCommand()) {
             stopPublishing();
@@ -207,24 +219,12 @@ const MediumVoltageStationPage = () => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [Command]);
+
     useEffect(() => {
-        if (isSendingCommand()) {
-            if (isEqual(ReceivedRelayArray, Command)) {
-                // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
-                setCommand(['-', '-', '-', '-']);
-                stopPublishing();
-                setRelaysHwState(ReceivedRelayArray);
-            } else {
-                // to make for the case if another client set a state while this client is setting.
-                setIndividualStates(ReceivedRelayArray, Command);
-            }
-        } else {
-            setRelaysHwState(ReceivedRelayArray);
-        }
+        handleArrivedRelaySignals(ReceivedRelayArray, Command);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ReceivedRelayArray]);
     useEffect(() => {
-        // console.log('ReceivedDataArray', ReceivedDataArray);
         const graphsDataCopy = [...GraphsData];
         for (let index = 0; index < ReceivedDataArray.length; index++) {
             const DI = ReceivedDataArray[index];
@@ -286,8 +286,8 @@ const MediumVoltageStationPage = () => {
                     <Grid container spacing={gridSpacing} p={1}>
                         <Grid item sm={6} xs={12} md={3}>
                             <RelayLightCard
-                                isLoading={RelaysHwState[0] !== '1' && RelaysHwState[0] !== '0'}
-                                RelaysHwState={RelaysHwState}
+                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
+                                RelaysHwState={ReceivedRelayArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={0}
@@ -296,8 +296,8 @@ const MediumVoltageStationPage = () => {
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
                             <RelayLightCard
-                                isLoading={RelaysHwState[0] !== '1' && RelaysHwState[0] !== '0'}
-                                RelaysHwState={RelaysHwState}
+                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
+                                RelaysHwState={ReceivedRelayArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={1}
@@ -306,8 +306,8 @@ const MediumVoltageStationPage = () => {
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
                             <RelayLightCard
-                                isLoading={RelaysHwState[0] !== '1' && RelaysHwState[0] !== '0'}
-                                RelaysHwState={RelaysHwState}
+                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
+                                RelaysHwState={ReceivedRelayArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={2}
@@ -316,8 +316,8 @@ const MediumVoltageStationPage = () => {
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
                             <RelayLightCard
-                                isLoading={RelaysHwState[0] !== '1' && RelaysHwState[0] !== '0'}
-                                RelaysHwState={RelaysHwState}
+                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
+                                RelaysHwState={ReceivedRelayArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={3}

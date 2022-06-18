@@ -29,9 +29,7 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, 
     const theme = useTheme();
     const handleChange = () => {
         const newCommand = [...Command];
-        console.log('newCommand', newCommand);
-        newCommand[index] = RelaysHwState[index] === '1' ? '0' : '1';
-        console.log('newCommand', newCommand);
+        newCommand[index] = '1';
         setCommand(newCommand);
     };
     return (
@@ -81,8 +79,8 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, 
                                 <Box>
                                     {RelaysHwState[index] === '1' || RelaysHwState[index] === '0' ? (
                                         <Switch
-                                            disabled={Command[index] === '1' || Command[index] === '0'}
-                                            checked={RelaysHwState[index] === '1'}
+                                            disabled={Command[index] !== '-'}
+                                            checked={RelaysHwState[index] !== '-'}
                                             onChange={handleChange}
                                         />
                                     ) : (
@@ -101,7 +99,7 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, 
                                 right: '25px'
                             }}
                         >
-                            {(Command[index] === '1' || Command[index] === '0') && <CircularProgress color="secondary" size="20px" />}
+                            {Command[index] !== '-' && <CircularProgress color="secondary" size="20px" />}
                         </Box>
                     </Box>
                 </CardWrapper>
