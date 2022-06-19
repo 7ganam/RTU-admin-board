@@ -49,6 +49,15 @@ function createData(name, value) {
     return { name, value };
 }
 
+function getBits(value) {
+    const base2Serve = value.toString(2).split('').reverse().join('');
+    const baseLServe = new Array(16 - base2Serve.length).join('0');
+    const base2 = base2Serve + baseLServe;
+    const stringBase2 = base2.toString();
+    const arraryBase2 = stringBase2?.split('') ?? '00000000000000000';
+    return arraryBase2;
+}
+
 const rows = [
     createData('DI 1', 'loading...'),
     createData('DI 2', 'loading...'),
@@ -343,7 +352,7 @@ const MediumVoltageStationPage = () => {
                                     <StyledTableCell align="center" component="th" scope="row">
                                         {row.name}
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">{ReceivedDigitalArray[index]}</StyledTableCell>
+                                    <StyledTableCell align="center">{getBits(Math.trunc(ReceivedDigitalArray[0]))[index]}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>

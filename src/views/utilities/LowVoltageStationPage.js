@@ -5,7 +5,7 @@ import { Card, Grid } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
-import RelayLightCard from './RelayLightCard';
+import RelayLightCard from './RelayLightCardOld';
 
 // assets
 import LinkIcon from '@mui/icons-material/Link';
