@@ -5,7 +5,7 @@ import { Card, Grid } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
-import RelayLightCard from './RelayLightCard';
+import VILightCard from './RelayLightCard';
 
 // assets
 import LinkIcon from '@mui/icons-material/Link';
@@ -76,11 +76,12 @@ const rows = [
     createData('DI 15', 'loading...'),
     createData('DI 16', 'loading...')
 ];
+
 const MediumVoltageStationPage = () => {
     const { id } = useParams();
-    // const [RelaysHwState, setRelaysHwState] = useState(['-', '-', '-', '-']);
+    // const [VIsHwState, setVIsHwState] = useState(['-', '-', '-', '-']);
     const [Command, setCommand] = useState(['-', '-', '-', '-']);
-    const [ReceivedRelayArray, setReceivedRelayArray] = useState([]);
+    const [ReceivedVIArray, setReceivedVIArray] = useState([]);
     const [ReceivedDataArray, setReceivedDataArray] = useState([]);
     const [ReceivedDigitalArray, setReceivedDigitalArray] = useState([
         'loading...',
@@ -150,10 +151,10 @@ const MediumVoltageStationPage = () => {
         return inputString;
     };
 
-    const isEqual = (ReceivedRelayArray, command) => {
-        for (let index = 0; index < ReceivedRelayArray.length; index++) {
+    const isEqual = (ReceivedVIArray, command) => {
+        for (let index = 0; index < ReceivedVIArray.length; index++) {
             if (command[index] === '1' || command[index] === '0') {
-                if (command[index] !== ReceivedRelayArray[index]) {
+                if (command[index] !== ReceivedVIArray[index]) {
                     return false;
                 }
             }
@@ -161,19 +162,19 @@ const MediumVoltageStationPage = () => {
         return true;
     };
 
-    const handleArrivedRelaySignals = (RelayHWStateArray, RelayCommandArray) => {
+    const handleArrivedVISignals = (VIHWStateArray, VICommandArray) => {
         // HW STATE 1 -> arudino received the command and will not apply any other commands until you send it another 0
         // HW STATE 0 -> arduino waiting for commands and will apply a new command if you send it.
 
         // 1- if a hw sate is 1 set the corresponding command to 0 to to inform the arduino the hardware state arrived here and allow it to process further commands
         // 2- if a hw state is 0 && command is 0 -> stop sending the command ( this means you were telling the arduino to start accepting new commands and it received this so no need for further)
-        // 3-if a hw state is 0 && command is 1 -> do nothing ( you are sending a command and aruino didn't hear yet).
+        // 3-if a hw state is 0 && command is 1 -> do nothing (a command is being sent to the  arduino .. arduino should respond with hw state 1 soon).
         const commandArrayCopy = [...Command];
 
-        for (let i = 0; i < RelayHWStateArray.length; i++) {
-            if (RelayHWStateArray[i] === '1') {
+        for (let i = 0; i < VIHWStateArray.length; i++) {
+            if (VIHWStateArray[i] === '1') {
                 commandArrayCopy[i] = '0';
-            } else if (RelayHWStateArray[i] === '0' && Command[i] === '0') {
+            } else if (VIHWStateArray[i] === '0' && Command[i] === '0') {
                 commandArrayCopy[i] = '-';
             }
         }
@@ -184,6 +185,7 @@ const MediumVoltageStationPage = () => {
     };
 
     // --------------------------------------------| Effects |--------------------------------------------
+
     // on: start => connect to broker
     useEffect(() => {
         brokerRef.current = mqtt.connect('ws://ec2-52-28-144-120.eu-central-1.compute.amazonaws.com:8000', {
@@ -194,7 +196,7 @@ const MediumVoltageStationPage = () => {
 
         return () => {};
     }, []);
-    // on: start => subscribe to the topic
+    // on: start => subscribe to the topic and define callback function
     useEffect(() => {
         // subscribe to hardware state
         brokerRef.current.unsubscribe(`medium/station${id}/hwState`);
@@ -208,8 +210,8 @@ const MediumVoltageStationPage = () => {
             const receivedDataArray = payloadArray.slice(0, 11);
             setReceivedDataArray(receivedDataArray);
 
-            const receivedRelayArray = payloadArray.slice(11, 15);
-            setReceivedRelayArray(receivedRelayArray);
+            const receivedVIArray = payloadArray.slice(11, 15);
+            setReceivedVIArray(receivedVIArray);
 
             const receivedDigitalArray = payloadArray.slice(15, 31);
             setReceivedDigitalArray(receivedDigitalArray);
@@ -217,7 +219,7 @@ const MediumVoltageStationPage = () => {
         return () => {};
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
+    // unregister old pulisher and register a new one whenever the Commands state change
     useEffect(() => {
         if (isSendingCommand()) {
             stopPublishing();
@@ -230,9 +232,9 @@ const MediumVoltageStationPage = () => {
     }, [Command]);
 
     useEffect(() => {
-        handleArrivedRelaySignals(ReceivedRelayArray, Command);
+        handleArrivedVISignals(ReceivedVIArray, Command);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ReceivedRelayArray]);
+    }, [ReceivedVIArray]);
     useEffect(() => {
         const graphsDataCopy = [...GraphsData];
         for (let index = 0; index < ReceivedDataArray.length; index++) {
@@ -294,43 +296,43 @@ const MediumVoltageStationPage = () => {
                 <Grid item xs={12}>
                     <Grid container spacing={gridSpacing} p={1}>
                         <Grid item sm={6} xs={12} md={3}>
-                            <RelayLightCard
-                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
-                                RelaysHwState={ReceivedRelayArray}
+                            <VILightCard
+                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
+                                RelaysHwState={ReceivedVIArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={0}
-                                title="Relay 1"
+                                title="VI 1"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
-                            <RelayLightCard
-                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
-                                RelaysHwState={ReceivedRelayArray}
+                            <VILightCard
+                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
+                                RelaysHwState={ReceivedVIArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={1}
-                                title="Relay 2"
+                                title="VI 2"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
-                            <RelayLightCard
-                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
-                                RelaysHwState={ReceivedRelayArray}
+                            <VILightCard
+                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
+                                RelaysHwState={ReceivedVIArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={2}
-                                title="Relay 3"
+                                title="VI 3"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
-                            <RelayLightCard
-                                isLoading={ReceivedRelayArray[0] !== '1' && ReceivedRelayArray[0] !== '0'}
-                                RelaysHwState={ReceivedRelayArray}
+                            <VILightCard
+                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
+                                RelaysHwState={ReceivedVIArray}
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={3}
-                                title="Relay 4"
+                                title="VI 4"
                             />
                         </Grid>
                     </Grid>
