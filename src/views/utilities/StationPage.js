@@ -87,7 +87,7 @@ const StationPage = () => {
         publishString += ',';
         console.log('pulished value', publishString);
         brokerRef.current.publish(
-            `station${id}/command`,
+            `station${id}/DEV_command`,
             JSON.stringify(publishString) // convert number to string
         );
     }
@@ -184,8 +184,8 @@ const StationPage = () => {
     // Subscribe to all topics and define the call back functions
     useEffect(() => {
         // subscribe to hardware state
-        brokerRef.current.unsubscribe(`station${id}/hwState`);
-        brokerRef.current.subscribe(`station${id}/hwState`);
+        brokerRef.current.unsubscribe(`station${id}/DEV_hwState`);
+        brokerRef.current.subscribe(`station${id}/DEV_hwState`);
         // define the call back function
         brokerRef.current.on('message', (topic, payload) => {
             const payloadString = new TextDecoder().decode(payload);

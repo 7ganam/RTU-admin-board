@@ -1,11 +1,12 @@
 /* eslint-disable no-plusplus */
-import { Card, Grid } from '@mui/material';
+import { Card, Grid, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
-import VILightCard from './RelayLightCard';
+import RelayLightCard from './RelayLightCard';
+import LocationDropDown from './LocationDropDown';
 
 // assets
 import LinkIcon from '@mui/icons-material/Link';
@@ -23,6 +24,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+
+import LoadingButton from '@mui/lab/LoadingButton';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
+
 // =============================|| TABLER ICONS ||============================= //
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -78,10 +83,16 @@ const rows = [
 ];
 
 const MediumVoltageStationPage = () => {
+    const [loading, setLoading] = useState(true);
+    const handleClick = () => {
+        setLoading(true);
+    };
+
     const { id } = useParams();
-    // const [VIsHwState, setVIsHwState] = useState(['-', '-', '-', '-']);
-    const [Command, setCommand] = useState(['-', '-', '-', '-']);
-    const [ReceivedVIArray, setReceivedVIArray] = useState([]);
+    // const [RelaysHwState, setRelaysHwState] = useState(['-', '-', '-', '-']);
+    const [RelayCommand, setRelayCommand] = useState(['-', '-', '-', '-']);
+    const [ReceivedRelayArray, setReceivedRelayArray] = useState([]);
+
     const [ReceivedDataArray, setReceivedDataArray] = useState([]);
     const [ReceivedDigitalArray, setReceivedDigitalArray] = useState([
         'loading...',
@@ -115,32 +126,26 @@ const MediumVoltageStationPage = () => {
         [0, 0, 0, 0, 0, 0, 0]
     ]);
 
+    const [VIHwState, setVIHwState] = useState(['-', '-', '-', '-', '-', '-']);
+    const [ReceivedVIArray, setReceivedVIArray] = useState([]);
+    const [VICommand, setVICommand] = useState(['-', '-', '-', '-', '-', '-']);
+
+    const [LocationHwState, setLocationHwState] = useState(['-']);
+    const [ReceivedLocationArray, setReceivedLocationArray] = useState([]);
+    const [LocationCommand, setLocationCommand] = useState(['-']);
+
     // connect to broker
     const brokerRef = useRef();
 
     // ----------------------------------------------| utils |--------------------------------------------
-    const PublisherTimerRef = useRef(null);
-    function publisherFunction() {
-        let publishString = Command.join(',');
-        publishString += ',';
-        console.log('pulished value', publishString);
-        brokerRef.current.publish(
-            `medium/station${id}/command`,
-            JSON.stringify(publishString) // convert number to string
-        );
-    }
-    const startPublishing = (timeInterval) => {
-        PublisherTimerRef.current = setInterval(publisherFunction, timeInterval, 100, 200);
-    };
-    const stopPublishing = () => {
-        clearInterval(PublisherTimerRef.current);
-    };
-    const isSendingCommand = () => {
-        const oneExists = Command.indexOf('1') !== -1;
-        const zeroExists = Command.indexOf('0') !== -1;
+
+    //
+    // helper functions
+    const isSending = (command) => {
+        const oneExists = command.indexOf('1') !== -1;
+        const zeroExists = command.indexOf('0') !== -1;
         return oneExists || zeroExists;
     };
-
     const removeUnwantedChars = (inputString) => {
         const forbiddenChars = ['"'];
 
@@ -150,11 +155,10 @@ const MediumVoltageStationPage = () => {
         }
         return inputString;
     };
-
-    const isEqual = (ReceivedVIArray, command) => {
-        for (let index = 0; index < ReceivedVIArray.length; index++) {
+    const isEqual = (ReceivedRelayArray, command) => {
+        for (let index = 0; index < ReceivedRelayArray.length; index++) {
             if (command[index] === '1' || command[index] === '0') {
-                if (command[index] !== ReceivedVIArray[index]) {
+                if (command[index] !== ReceivedRelayArray[index]) {
                     return false;
                 }
             }
@@ -162,26 +166,100 @@ const MediumVoltageStationPage = () => {
         return true;
     };
 
-    const handleArrivedVISignals = (VIHWStateArray, VICommandArray) => {
+    //
+    // Relay functions----
+    const relaysCommandPublisherTimerRef = useRef(null);
+    function relaysCommandpublisherFunction() {
+        let publishString = RelayCommand.join(',');
+        publishString += ',';
+        console.log('pulished value', publishString);
+        brokerRef.current.publish(
+            `medium/station${id}/DEV_command`,
+            JSON.stringify(publishString) // convert number to string
+        );
+    }
+    const registerRelayPublisher = (timeInterval) => {
+        relaysCommandPublisherTimerRef.current = setInterval(relaysCommandpublisherFunction, timeInterval);
+    };
+    const unregisterRelayPublisher = () => {
+        clearInterval(relaysCommandPublisherTimerRef.current);
+    };
+    const handleArrivedRelaySignals = (RelayHWStateArray, RelayCommandArray) => {
         // HW STATE 1 -> arudino received the command and will not apply any other commands until you send it another 0
         // HW STATE 0 -> arduino waiting for commands and will apply a new command if you send it.
 
         // 1- if a hw sate is 1 set the corresponding command to 0 to to inform the arduino the hardware state arrived here and allow it to process further commands
         // 2- if a hw state is 0 && command is 0 -> stop sending the command ( this means you were telling the arduino to start accepting new commands and it received this so no need for further)
         // 3-if a hw state is 0 && command is 1 -> do nothing (a command is being sent to the  arduino .. arduino should respond with hw state 1 soon).
-        const commandArrayCopy = [...Command];
+        const commandArrayCopy = [...RelayCommand];
 
-        for (let i = 0; i < VIHWStateArray.length; i++) {
-            if (VIHWStateArray[i] === '1') {
+        for (let i = 0; i < RelayHWStateArray.length; i++) {
+            if (RelayHWStateArray[i] === '1') {
                 commandArrayCopy[i] = '0';
-            } else if (VIHWStateArray[i] === '0' && Command[i] === '0') {
+            } else if (RelayHWStateArray[i] === '0' && RelayCommand[i] === '0') {
                 commandArrayCopy[i] = '-';
             }
         }
 
-        if (!isEqual(commandArrayCopy, Command)) {
-            setCommand(commandArrayCopy);
+        if (!isEqual(commandArrayCopy, RelayCommand)) {
+            setRelayCommand(commandArrayCopy);
         }
+    };
+    // TODO: refactor this to make it not dependent on states ( set state as a parameter maybe)
+    const setIndividualStates = (receivedArray, commandArray, setCommand, setHwState) => {
+        for (let i = 0; i < receivedArray.length; i++) {
+            if ((commandArray[i] === '1' || commandArray[i] === '0') && commandArray[i] === receivedArray[i]) {
+                const commandArrayCopy = [...commandArray];
+                commandArrayCopy[i] = '-';
+                setCommand(commandArrayCopy); // reset the command
+                const VIHwStateCopy = [...VIHwState];
+                VIHwStateCopy[i] = receivedArray[i];
+                setHwState(VIHwStateCopy); // set the single relay state to the received the data
+            }
+        }
+    };
+    const handleRelayPushButtonClicked = (index) => {
+        const newCommand = [...RelayCommand];
+        newCommand[index] = '1';
+        setRelayCommand(newCommand);
+    };
+
+    //
+    // VI function----
+    const VICommandPublisherTimerRef = useRef(null);
+    function VICommandpublisherFunction() {
+        let publishString = VICommand.join(',');
+        publishString += ',';
+        console.log('pulished VI', publishString);
+        brokerRef.current.publish(
+            `medium/station${id}/DEV_vicommand`,
+            JSON.stringify(publishString) // convert number to string
+        );
+    }
+    const registerVIPublisher = (timeInterval) => {
+        VICommandPublisherTimerRef.current = setInterval(VICommandpublisherFunction, timeInterval);
+    };
+    const unregisterVIPublisher = () => {
+        clearInterval(VICommandPublisherTimerRef.current);
+    };
+
+    //
+    // Location function----
+    const LocationCommandPublisherTimerRef = useRef(null);
+    function LocationCommandpublisherFunction() {
+        let publishString = LocationCommand.join(',');
+        publishString += ',';
+        console.log('pulished Location', publishString);
+        brokerRef.current.publish(
+            `medium/station${id}/DEV_location-command`,
+            JSON.stringify(publishString) // convert number to string
+        );
+    }
+    const registerLocationPublisher = (timeInterval) => {
+        LocationCommandPublisherTimerRef.current = setInterval(LocationCommandpublisherFunction, timeInterval);
+    };
+    const unregisterLocationPublisher = () => {
+        clearInterval(LocationCommandPublisherTimerRef.current);
     };
 
     // --------------------------------------------| Effects |--------------------------------------------
@@ -199,8 +277,8 @@ const MediumVoltageStationPage = () => {
     // on: start => subscribe to the topic and define callback function
     useEffect(() => {
         // subscribe to hardware state
-        brokerRef.current.unsubscribe(`medium/station${id}/hwState`);
-        brokerRef.current.subscribe(`medium/station${id}/hwState`);
+        brokerRef.current.unsubscribe(`medium/station${id}/DEV_hwState`);
+        brokerRef.current.subscribe(`medium/station${id}/DEV_hwState`);
         // define the call back function
         brokerRef.current.on('message', (topic, payload) => {
             const payloadString = new TextDecoder().decode(payload);
@@ -210,31 +288,21 @@ const MediumVoltageStationPage = () => {
             const receivedDataArray = payloadArray.slice(0, 11);
             setReceivedDataArray(receivedDataArray);
 
-            const receivedVIArray = payloadArray.slice(11, 15);
+            const receivedRelayArray = payloadArray.slice(11, 15);
+            setReceivedRelayArray(receivedRelayArray);
+
+            const receivedDigitalArray = payloadArray.slice(15, 16);
+            setReceivedDigitalArray(receivedDigitalArray);
+
+            const receivedVIArray = payloadArray.slice(16, 22);
             setReceivedVIArray(receivedVIArray);
 
-            const receivedDigitalArray = payloadArray.slice(15, 31);
-            setReceivedDigitalArray(receivedDigitalArray);
+            const receivedLocationArray = payloadArray.slice(22, 23);
+            setReceivedLocationArray(receivedLocationArray);
         });
         return () => {};
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    // unregister old pulisher and register a new one whenever the Commands state change
-    useEffect(() => {
-        if (isSendingCommand()) {
-            stopPublishing();
-            startPublishing(3000);
-        }
-        return () => {
-            stopPublishing();
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [Command]);
-
-    useEffect(() => {
-        handleArrivedVISignals(ReceivedVIArray, Command);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ReceivedVIArray]);
     useEffect(() => {
         const graphsDataCopy = [...GraphsData];
         for (let index = 0; index < ReceivedDataArray.length; index++) {
@@ -248,6 +316,116 @@ const MediumVoltageStationPage = () => {
         setGraphsData(graphsDataCopy);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ReceivedDataArray]);
+
+    //
+    // Rellay Effects --------------
+    // unregister old pulisher and register a new one whenever the Commands state change
+    useEffect(() => {
+        if (isSending(RelayCommand)) {
+            unregisterRelayPublisher();
+            registerRelayPublisher(3000);
+        }
+        return () => {
+            unregisterRelayPublisher();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [RelayCommand]);
+    useEffect(() => {
+        handleArrivedRelaySignals(ReceivedRelayArray, RelayCommand);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ReceivedRelayArray]);
+
+    //
+    // VI  Effects --------------
+    useEffect(() => {
+        if (isSending(VICommand)) {
+            if (isEqual(ReceivedVIArray, VICommand)) {
+                // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
+                setVICommand(['-', '-', '-', '-', '-', '-']);
+                unregisterVIPublisher();
+                setVIHwState(ReceivedVIArray);
+            } else {
+                // to make for the case if another client set a state while this client is setting.
+                setIndividualStates(ReceivedVIArray, VICommand, setVICommand, setVIHwState);
+            }
+        } else {
+            setVIHwState(ReceivedVIArray);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ReceivedVIArray]);
+    useEffect(() => {
+        if (isSending(VICommand)) {
+            unregisterVIPublisher();
+            registerVIPublisher(3000);
+        }
+        return () => {
+            unregisterVIPublisher();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [VICommand]);
+    // this needs refactoring later
+    useEffect(() => {
+        if (isSending(VICommand)) {
+            if (isEqual(ReceivedVIArray, VICommand)) {
+                // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
+                setVICommand(['-', '-', '-', '-', '-', '-']);
+                unregisterVIPublisher();
+                setVIHwState(ReceivedVIArray);
+            } else {
+                // to make for the case if another client set a state while this client is setting.
+                setIndividualStates(ReceivedVIArray, VICommand, setVICommand, setVIHwState);
+            }
+        } else {
+            setVIHwState(ReceivedVIArray);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ReceivedVIArray]);
+
+    //
+    // Location Effects --------------
+    useEffect(() => {
+        if (isSending(LocationCommand)) {
+            if (isEqual(ReceivedLocationArray, LocationCommand)) {
+                // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
+                setLocationCommand(['-', '-', '-', '-', '-', '-']);
+                unregisterLocationPublisher();
+                setLocationHwState(ReceivedLocationArray);
+            } else {
+                // to make for the case if another client set a state while this client is setting.
+                setIndividualStates(ReceivedLocationArray, LocationCommand, setLocationCommand, setLocationHwState);
+            }
+        } else {
+            setLocationHwState(ReceivedLocationArray);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ReceivedLocationArray]);
+    useEffect(() => {
+        if (isSending(LocationCommand)) {
+            unregisterLocationPublisher();
+            registerLocationPublisher(3000);
+        }
+        return () => {
+            unregisterLocationPublisher();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [LocationCommand]);
+    // this needs refactoring later
+    useEffect(() => {
+        if (isSending(LocationCommand)) {
+            if (isEqual(ReceivedLocationArray, LocationCommand)) {
+                // if received hardware state is the same as the command being send .. reset the command and change the in app hardware states
+                setLocationCommand(['-', '-', '-', '-', '-', '-']);
+                unregisterLocationPublisher();
+                setLocationHwState(ReceivedLocationArray);
+            } else {
+                // to make for the case if another client set a state while this client is setting.
+                setIndividualStates(ReceivedLocationArray, LocationCommand, setLocationCommand, setLocationHwState);
+            }
+        } else {
+            setLocationHwState(ReceivedLocationArray);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ReceivedLocationArray]);
 
     return (
         <MainCard
@@ -290,56 +468,165 @@ const MediumVoltageStationPage = () => {
                         <ChartCard title="Apparent power" unit="kVA" data2={GraphsData[10]} />
                     </Grid>
                 </Grid>
-
                 <Divider sx={{ my: 3 }} />
-
+                <Typography m={1} variant="h2">
+                    Relays
+                </Typography>{' '}
                 <Grid item xs={12}>
                     <Grid container spacing={gridSpacing} p={1}>
                         <Grid item sm={6} xs={12} md={3}>
-                            <VILightCard
-                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
-                                RelaysHwState={ReceivedVIArray}
-                                setCommand={setCommand}
-                                Command={Command}
+                            <LoadingButton
+                                sx={{ width: '100%', height: '100px' }}
+                                color="secondary"
+                                onClick={() => {
+                                    handleRelayPushButtonClicked(0);
+                                }}
+                                loading={RelayCommand[0] !== '-'}
+                                loadingPosition="start"
+                                startIcon={<FlashOnIcon />}
+                                variant="contained"
+                            >
+                                Click to open Relay 1
+                            </LoadingButton>
+                        </Grid>{' '}
+                        <Grid item sm={6} xs={12} md={3}>
+                            <LoadingButton
+                                sx={{ width: '100%', height: '100px' }}
+                                color="secondary"
+                                onClick={() => {
+                                    handleRelayPushButtonClicked(1);
+                                }}
+                                loading={RelayCommand[1] !== '-'}
+                                loadingPosition="start"
+                                startIcon={<FlashOnIcon />}
+                                variant="contained"
+                            >
+                                Click to open Relay 2
+                            </LoadingButton>
+                        </Grid>{' '}
+                        <Grid item sm={6} xs={12} md={3}>
+                            <LoadingButton
+                                sx={{ width: '100%', height: '100px' }}
+                                color="secondary"
+                                onClick={() => {
+                                    handleRelayPushButtonClicked(2);
+                                }}
+                                loading={RelayCommand[2] !== '-'}
+                                loadingPosition="start"
+                                startIcon={<FlashOnIcon />}
+                                variant="contained"
+                                elevation={6}
+                            >
+                                Click to open Relay 3
+                            </LoadingButton>
+                        </Grid>
+                        <Grid item sm={6} xs={12} md={3}>
+                            <LoadingButton
+                                sx={{ width: '100%', height: '100px' }}
+                                color="secondary"
+                                onClick={() => {
+                                    handleRelayPushButtonClicked(3);
+                                }}
+                                loading={RelayCommand[3] !== '-'}
+                                loadingPosition="start"
+                                startIcon={<FlashOnIcon />}
+                                variant="contained"
+                            >
+                                Click to open Relay 4
+                            </LoadingButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Divider sx={{ my: 3 }} />
+                <Typography m={1} variant="h2">
+                    VI
+                </Typography>{' '}
+                <Grid item xs={12}>
+                    <Grid container spacing={gridSpacing} p={1}>
+                        <Grid item sm={6} xs={12} md={3}>
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
                                 index={0}
                                 title="VI 1"
                             />
-                        </Grid>
+                        </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
-                            <VILightCard
-                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
-                                RelaysHwState={ReceivedVIArray}
-                                setCommand={setCommand}
-                                Command={Command}
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
                                 index={1}
                                 title="VI 2"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
-                            <VILightCard
-                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
-                                RelaysHwState={ReceivedVIArray}
-                                setCommand={setCommand}
-                                Command={Command}
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
                                 index={2}
                                 title="VI 3"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
-                            <VILightCard
-                                isLoading={ReceivedVIArray[0] !== '1' && ReceivedVIArray[0] !== '0'}
-                                RelaysHwState={ReceivedVIArray}
-                                setCommand={setCommand}
-                                Command={Command}
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
                                 index={3}
                                 title="VI 4"
                             />
                         </Grid>
+                        <Grid item sm={6} xs={12} md={3}>
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
+                                index={4}
+                                title="VI 5"
+                            />
+                        </Grid>
+                        <Grid item sm={6} xs={12} md={3}>
+                            <RelayLightCard
+                                isLoading={VIHwState[0] !== '1' && VIHwState[0] !== '0'}
+                                RelaysHwState={VIHwState}
+                                setCommand={setVICommand}
+                                Command={VICommand}
+                                index={5}
+                                title="VI 6"
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
-
                 <Divider sx={{ my: 3 }} />
-
+                <Typography m={1} variant="h2">
+                    Location
+                </Typography>{' '}
+                <Grid item xs={12}>
+                    <Grid container spacing={gridSpacing} p={1}>
+                        <Grid item sm={6} xs={12} md={6}>
+                            <LocationDropDown
+                                isLoading={LocationHwState[0] !== '1' && LocationHwState[0] !== '0'}
+                                RelaysHwState={LocationHwState}
+                                setCommand={setLocationCommand}
+                                Command={LocationCommand}
+                                index={0}
+                                title="Location"
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Divider sx={{ my: 3 }} />
+                <Typography m={1} variant="h2">
+                    Digital readings
+                </Typography>{' '}
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>

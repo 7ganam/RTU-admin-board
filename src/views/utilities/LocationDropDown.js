@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Typography } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import CircularProgress from '@mui/material/CircularProgress';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -12,6 +18,7 @@ import RelayCard from 'ui-component/cards/Skeleton/RelayCard';
 
 // assets
 import ControlCameraIcon from '@mui/icons-material/ControlCamera';
+
 // styles
 // eslint-disable-next-line no-unused-vars
 const CardWrapper = styled(MainCard)(({ theme }) => ({
@@ -25,13 +32,16 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
 // eslint-disable-next-line react/prop-types
-const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, title }) => {
+const LocationDropDown = ({ isLoading, RelaysHwState, setCommand, Command, index, title }) => {
     const theme = useTheme();
-    const handleChange = () => {
+
+    const handleChange = (event) => {
+        const newValue = event.target.value;
         const newCommand = [...Command];
-        newCommand[index] = RelaysHwState[index] === '1' ? '0' : '1';
+        newCommand[index] = newValue;
         setCommand(newCommand);
     };
+
     return (
         <>
             {isLoading ? (
@@ -70,22 +80,30 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, 
                                             ...theme.typography.largeAvatar,
                                             backgroundColor: theme.palette.warning.light,
                                             color: theme.palette.warning.dark,
-                                            mr: 2
+                                            mr: 2,
+                                            mt: 0.5
                                         }}
                                     >
-                                        <ControlCameraIcon fontSize="inherit" />
+                                        <EditLocationAltIcon fontSize="inherit" />
                                     </Avatar>
                                 </Box>
-                                <Box>
-                                    {RelaysHwState[index] === '1' || RelaysHwState[index] === '0' ? (
-                                        <Switch
+
+                                <Box sx={{ minWidth: 120, width: '100%' }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Location</InputLabel>
+                                        <Select
+                                            fullWidth
                                             disabled={Command[index] === '1' || Command[index] === '0'}
-                                            checked={RelaysHwState[index] === '1'}
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={RelaysHwState[index]}
+                                            label="Location"
                                             onChange={handleChange}
-                                        />
-                                    ) : (
-                                        <div>X</div>
-                                    )}
+                                        >
+                                            <MenuItem value="0">Local</MenuItem>
+                                            <MenuItem value="1">remote</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </Box>
                             </Box>
                         </Box>
@@ -108,8 +126,8 @@ const RelayLightCard = ({ isLoading, RelaysHwState, setCommand, Command, index, 
     );
 };
 
-RelayLightCard.propTypes = {
+LocationDropDown.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default RelayLightCard;
+export default LocationDropDown;

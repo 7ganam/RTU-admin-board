@@ -87,7 +87,7 @@ const LowVoltageStationPage = () => {
         publishString += ',';
         console.log('pulished value', publishString);
         brokerRef.current.publish(
-            `low/station${id}/command`,
+            `low/station${id}/DEV_command`,
             JSON.stringify(publishString) // convert number to string
         );
     }
@@ -186,8 +186,8 @@ const LowVoltageStationPage = () => {
     // Subscribe to all topics and define the call back functions
     useEffect(() => {
         // subscribe to hardware state
-        brokerRef.current.unsubscribe(`low/station${id}/hwState`);
-        brokerRef.current.subscribe(`low/station${id}/hwState`);
+        brokerRef.current.unsubscribe(`low/station${id}/DEV_hwState`);
+        brokerRef.current.subscribe(`low/station${id}/DEV_hwState`);
         // define the call back function
         brokerRef.current.on('message', (topic, payload) => {
             const payloadString = new TextDecoder().decode(payload);
