@@ -284,6 +284,7 @@ const MediumVoltageStationPage = () => {
             const payloadString = new TextDecoder().decode(payload);
             const cleanPayloadString = removeUnwantedChars(payloadString);
             const payloadArray = cleanPayloadString.split(',');
+            console.log('payloadArray', payloadArray);
 
             const receivedDataArray = payloadArray.slice(0, 11);
             setReceivedDataArray(receivedDataArray);
@@ -295,7 +296,9 @@ const MediumVoltageStationPage = () => {
             setReceivedDigitalArray(receivedDigitalArray);
 
             const receivedVIArray = payloadArray.slice(16, 22);
-            setReceivedVIArray(receivedVIArray);
+            const cleanedReceivedVIArray = receivedVIArray.map((entry) => (entry === '1.0' ? '1' : '0')); // this should be done on arduino side later
+
+            setReceivedVIArray(cleanedReceivedVIArray);
 
             const receivedLocationArray = payloadArray.slice(22, 23);
             setReceivedLocationArray(receivedLocationArray);
