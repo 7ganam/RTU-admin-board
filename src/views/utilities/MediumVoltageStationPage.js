@@ -297,7 +297,6 @@ const MediumVoltageStationPage = () => {
 
             const receivedVIArray = payloadArray.slice(16, 22);
             const cleanedReceivedVIArray = receivedVIArray.map((entry) => (entry === '1.0' ? '1' : '0')); // this should be done on arduino side later
-
             setReceivedVIArray(cleanedReceivedVIArray);
 
             const receivedLocationArray = payloadArray.slice(22, 23);

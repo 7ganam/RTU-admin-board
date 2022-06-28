@@ -238,7 +238,7 @@ const LowVoltageStationPage = () => {
                         <ChartCard title="phase 3 RMS current" unit="A" data2={GraphsData[6]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="Apparent Power" unit="VA" data2={GraphsData[7]} />
+                        <ChartCard title="Apparent Power" unit="KVA" data2={GraphsData[7]} />
                     </Grid>
                 </Grid>
 
@@ -253,7 +253,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={0}
-                                title="relay 1"
+                                title="CB Trip"
                             />
                         </Grid>
                         <Grid item sm={6} xs={12} md={3}>
@@ -263,7 +263,7 @@ const LowVoltageStationPage = () => {
                                 setCommand={setCommand}
                                 Command={Command}
                                 index={1}
-                                title="relay 2"
+                                title="LBS Trip"
                             />
                         </Grid>{' '}
                         <Grid item sm={6} xs={12} md={3}>
@@ -316,10 +316,10 @@ const LowVoltageStationPage = () => {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>Digital input ports</StyledTableCell>
-                                <StyledTableCell align="right">digital input 1</StyledTableCell>
-                                <StyledTableCell align="right">digital input 2</StyledTableCell>
-                                <StyledTableCell align="right">digital input 3</StyledTableCell>
-                                <StyledTableCell align="right">digital input 4</StyledTableCell>
+                                <StyledTableCell align="right">CB ON</StyledTableCell>
+                                <StyledTableCell align="right">CB OFF</StyledTableCell>
+                                <StyledTableCell align="right">LBS ON</StyledTableCell>
+                                <StyledTableCell align="right">LBS OFF</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
