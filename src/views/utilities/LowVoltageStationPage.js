@@ -238,7 +238,7 @@ const LowVoltageStationPage = () => {
                         <ChartCard title="phase 3 RMS current" unit="A" data2={GraphsData[6]} />
                     </Grid>
                     <Grid item xs={12} md={4} sx={{ pt: '16px !important' }}>
-                        <ChartCard title="Apparent Power" unit="KVA" data2={GraphsData[7]} />
+                        <ChartCard title="Apparent Power" unit="VA" data2={GraphsData[7]} />
                     </Grid>
                 </Grid>
 
