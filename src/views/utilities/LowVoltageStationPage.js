@@ -57,7 +57,14 @@ const LowVoltageStationPage = () => {
     const [Command, setCommand] = useState(['-', '-', '-', '-', '-', '-']);
     const [ReceivedRelayArray, setReceivedRelayArray] = useState([]);
     const [ReceivedDataArray, setReceivedDataArray] = useState([]);
-    const [ReceivedDigitalArray, setReceivedDigitalArray] = useState(['loading...', 'loading...', 'loading...', 'loading...']);
+    const [ReceivedDigitalArray, setReceivedDigitalArray] = useState([
+        'loading...',
+        'loading...',
+        'loading...',
+        'loading...',
+        'loading...',
+        'loading...'
+    ]);
     const [GraphsData, setGraphsData] = useState([
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
@@ -195,15 +202,14 @@ const LowVoltageStationPage = () => {
             const payloadArray = cleanPayloadString.split(',');
             console.log('payloadArray', payloadArray);
             // get relays values
+            const receivedDataArray = payloadArray.slice(0, 8);
+            setReceivedDataArray(receivedDataArray);
+
             const receivedRelayArray = payloadArray.slice(8, 14);
             setReceivedRelayArray(receivedRelayArray);
 
-            const receivedDigitalArray = payloadArray.slice(14, 18);
+            const receivedDigitalArray = payloadArray.slice(14, 20);
             setReceivedDigitalArray(receivedDigitalArray);
-
-            const receivedDataArray = payloadArray.slice(0, 8);
-
-            setReceivedDataArray(receivedDataArray);
         });
         return () => {};
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -320,6 +326,8 @@ const LowVoltageStationPage = () => {
                                 <StyledTableCell align="right">CB OFF</StyledTableCell>
                                 <StyledTableCell align="right">LBS ON</StyledTableCell>
                                 <StyledTableCell align="right">LBS OFF</StyledTableCell>
+                                <StyledTableCell align="right">DG1</StyledTableCell>
+                                <StyledTableCell align="right">DG2</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -332,6 +340,8 @@ const LowVoltageStationPage = () => {
                                     <StyledTableCell align="right">{ReceivedDigitalArray[1]}</StyledTableCell>
                                     <StyledTableCell align="right">{ReceivedDigitalArray[2]}</StyledTableCell>
                                     <StyledTableCell align="right">{ReceivedDigitalArray[3]}</StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[4]}</StyledTableCell>
+                                    <StyledTableCell align="right">{ReceivedDigitalArray[5]}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
